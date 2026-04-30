@@ -28,7 +28,7 @@ function App() {
 
     try {
       const params = new URLSearchParams(formData).toString()
-      const response = await fetch(`http://192.168.51.66:8000/api/search/stream?${params}`)  // // ВЪВЕДЕТЕ IP ADRESS на компютъра си тук!!!!
+      const response = await fetch(`${API_BASE}/api/search/stream?${params}`) // Използваме динамичния адрес от конфигурацията
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
