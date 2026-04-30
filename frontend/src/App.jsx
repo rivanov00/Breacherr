@@ -28,7 +28,7 @@ function App() {
 
     try {
       const params = new URLSearchParams(formData).toString()
-      const response = await fetch(`${API_BASE}/api/search/stream?${params}`) // Използваме динамичния адрес от конфигурацията
+      const response = await fetch(`${API_BASE}/api/search/stream?${params}`)
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()

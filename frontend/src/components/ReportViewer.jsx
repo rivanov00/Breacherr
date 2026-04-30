@@ -6,7 +6,6 @@ function ReportViewer({ results, searchData }) {
 
   const handleExport = async (format) => {
     try {
-      //const response = await fetch(`http://localhost:8000/api/export?format=${format}`, {
       const response = await fetch(`${API_BASE}/api/export?format=${format}`, {
 
         method: 'POST',
@@ -15,7 +14,6 @@ function ReportViewer({ results, searchData }) {
       })
       const data = await response.json()
 
-      // Create a download link for the exported data
       const blob = new Blob([data.data], { type: format === 'json' ? 'application/json' : 'text/xml' })
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -33,7 +31,6 @@ function ReportViewer({ results, searchData }) {
   return (
     <div className="results-container">
       <div className="results-grid">
-        {/* Social Profiles Section */}
         <div className="glass-card">
           <h2 className="section-title">
             <span>🌐</span> Социални профили
@@ -85,7 +82,6 @@ function ReportViewer({ results, searchData }) {
           )}
         </div>
 
-        {/* Data Breaches Section */}
         <div className="glass-card">
           <h2 className="section-title">
             <span>🛡️</span> Изтичане на данни
