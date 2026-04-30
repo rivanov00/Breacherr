@@ -22,7 +22,7 @@ body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
-  background-image: 
+  background-image:
     radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
     radial-gradient(at 100% 0%, rgba(34, 211, 238, 0.15) 0px, transparent 50%);
   min-height: 100vh;
@@ -32,6 +32,12 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
 }
 
 .glass-card {
@@ -44,6 +50,13 @@ body {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
+@media (max-width: 600px) {
+  .glass-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+}
+
 h1 {
   font-size: 3rem;
   font-weight: 700;
@@ -52,6 +65,13 @@ h1 {
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
   text-align: center;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2.2rem;
+    margin-top: 1rem;
+  }
 }
 
 p.subtitle {
@@ -141,6 +161,13 @@ input:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  overflow: hidden; /* Prevent overflow */
+}
+
+@media (max-width: 600px) {
+  .platform-card {
+    padding: 0.75rem;
+  }
 }
 
 .badge {
@@ -150,9 +177,20 @@ input:focus {
   font-weight: 700;
 }
 
-.badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-.badge-danger { background: rgba(244, 63, 94, 0.2); color: var(--danger); }
-.badge-primary { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
+.badge-success {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.badge-danger {
+  background: rgba(244, 63, 94, 0.2);
+  color: var(--danger);
+}
+
+.badge-primary {
+  background: rgba(99, 102, 241, 0.2);
+  color: var(--primary);
+}
 
 .breach-card {
   background: rgba(244, 63, 94, 0.05);
@@ -160,6 +198,19 @@ input:focus {
   padding: 1.25rem;
   border-radius: 1rem;
   margin-bottom: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .breach-card {
+    padding: 1rem;
+  }
+  .breach-header-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
 }
 
 .breach-name {
@@ -185,6 +236,17 @@ input:focus {
   gap: 1rem;
   justify-content: center;
   margin-top: 3rem;
+}
+
+@media (max-width: 600px) {
+  .export-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .btn-secondary {
+    width: 100%;
+  }
 }
 
 .btn-secondary {
@@ -265,12 +327,35 @@ input:focus {
   transition: width 0.5s ease;
 }
 
-.security-score-0 { background: #f43f5e; width: 20%; }
-.security-score-1 { background: #f97316; width: 40%; }
-.security-score-2 { background: #eab308; width: 60%; }
-.security-score-3 { background: #a855f7; width: 80%; }
-.security-score-4 { background: #6366f1; width: 90%; }
-.security-score-5 { background: #10b981; width: 100%; }
+.security-score-0 {
+  background: #f43f5e;
+  width: 20%;
+}
+
+.security-score-1 {
+  background: #f97316;
+  width: 40%;
+}
+
+.security-score-2 {
+  background: #eab308;
+  width: 60%;
+}
+
+.security-score-3 {
+  background: #a855f7;
+  width: 80%;
+}
+
+.security-score-4 {
+  background: #6366f1;
+  width: 90%;
+}
+
+.security-score-5 {
+  background: #10b981;
+  width: 100%;
+}
 
 .security-feedback {
   list-style: none;
@@ -310,6 +395,7 @@ input:focus {
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
+  min-width: 0; /* Critical for ellipsis to work in flex */
 }
 
 .profile-score {
@@ -332,5 +418,7 @@ input:focus {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,16 +1,18 @@
 import React from 'react'
 
 function ReportViewer({ results, searchData }) {
-  
+
   const handleExport = async (format) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/export?format=${format}`, {
+      //const response = await fetch(`http://localhost:8000/api/export?format=${format}`, {
+      const response = await fetch(`http://192.168.1.3:8000/api/export?format=${format}`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(searchData)
       })
       const data = await response.json()
-      
+
       // Create a download link for the exported data
       const blob = new Blob([data.data], { type: format === 'json' ? 'application/json' : 'text/xml' })
       const url = window.URL.createObjectURL(blob)
@@ -44,38 +46,38 @@ function ReportViewer({ results, searchData }) {
                 return acc;
               }, {})
             )
-            .sort((a, b) => b[1].max_score - a[1].max_score)
-            .map(([platform, data], index) => {
-              const globalMaxScore = Math.max(...results.profiles.map(p => p.match_score || 0));
-              
-              return (
-                <div key={index} className="platform-card" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <img src={data.icon} alt={platform} style={{ width: '24px', height: '24px', borderRadius: '4px' }} />
-                      <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{platform}</div>
+              .sort((a, b) => b[1].max_score - a[1].max_score)
+              .map(([platform, data], index) => {
+                const globalMaxScore = Math.max(...results.profiles.map(p => p.match_score || 0));
+
+                return (
+                  <div key={index} className="platform-card" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <img src={data.icon} alt={platform} style={{ width: '24px', height: '24px', borderRadius: '4px' }} />
+                        <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{platform}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <span className="badge badge-success">Намерен</span>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <span className="badge badge-success">Намерен</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', width: '100%', marginTop: '0.5rem' }}>
+                      {data.links
+                        .sort((a, b) => b.score - a.score)
+                        .map((link, i) => (
+                          <div key={i} className="profile-link-row">
+                            <a href={link.url} target="_blank" rel="noreferrer" className="profile-url">
+                              {link.url}
+                            </a>
+                            <span className="profile-score" style={{ color: link.score >= 90 ? 'var(--accent)' : 'var(--text-muted)' }}>
+                              {(link.score || 0)}% съвпадение
+                            </span>
+                          </div>
+                        ))}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', width: '100%', marginTop: '0.5rem' }}>
-                    {data.links
-                      .sort((a, b) => b.score - a.score)
-                      .map((link, i) => (
-                        <div key={i} className="profile-link-row">
-                          <a href={link.url} target="_blank" rel="noreferrer" className="profile-url">
-                            {link.url}
-                          </a>
-                          <span className="profile-score" style={{ color: link.score >= 90 ? 'var(--accent)' : 'var(--text-muted)' }}>
-                            {(link.score || 0)}% съвпадение
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              );
-            })
+                );
+              })
           ) : (
             <p style={{ color: 'var(--text-muted)' }}>Не бяха открити публични профили.</p>
           )}
@@ -95,7 +97,7 @@ function ReportViewer({ results, searchData }) {
                   )}
                   <div style={{ flex: 1 }}>
                     <div className="breach-name">{breach.Title}</div>
-                    <div style={{fontSize: '0.8rem', color: 'var(--accent)', marginBottom: '0.5rem'}}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>
                       Източник: {breach.Name} ({breach.Domain})
                     </div>
                     <div className="breach-date">Дата на изтичане: {breach.BreachDate}</div>
@@ -109,7 +111,7 @@ function ReportViewer({ results, searchData }) {
                       <span>🔐</span> Сигурност на паролата: <strong>{breach.SecurityAnalysis.label}</strong>
                     </div>
                     <div className="security-progress">
-                      <div 
+                      <div
                         className={`security-bar security-score-${breach.SecurityAnalysis.score}`}
                         style={{ width: `${(breach.SecurityAnalysis.score + 1) * 20}%` }}
                       ></div>
@@ -128,13 +130,13 @@ function ReportViewer({ results, searchData }) {
                   </div>
                 )}
 
-                <div style={{marginTop: '0.5rem', fontSize: '0.8rem'}}>
+                <div style={{ marginTop: '0.5rem', fontSize: '0.8rem' }}>
                   <strong>Компрометирани данни:</strong> {breach.DataClasses.join(', ')}
                 </div>
               </div>
             ))
           ) : (
-            <p style={{color: 'var(--text-muted)'}}>Няма открити данни за изтичане на информация за този имейл.</p>
+            <p style={{ color: 'var(--text-muted)' }}>Няма открити данни за изтичане на информация за този имейл.</p>
           )}
         </div>
       </div>

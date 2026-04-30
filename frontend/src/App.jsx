@@ -25,7 +25,7 @@ function App() {
 
     try {
       const params = new URLSearchParams(formData).toString()
-      const response = await fetch(`http://localhost:8000/api/search/stream?${params}`)
+      const response = await fetch(`http://192.168.1.3:8000/api/search/stream?${params}`)
       
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
@@ -56,7 +56,7 @@ function App() {
       }
     } catch (error) {
       console.error("Search failed:", error)
-      alert("Грешка при търсенето. Уверете се, че бекенд сървърът работи.")
+      alert(`Грешка: ${error.message}. Сървърът на 192.168.1.3:8000 достъпен ли е?`)
     } finally {
       setLoading(false)
     }
