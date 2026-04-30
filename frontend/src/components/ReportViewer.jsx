@@ -1,11 +1,13 @@
 import React from 'react'
+import { getApiBase } from '../config'
 
 function ReportViewer({ results, searchData }) {
+  const API_BASE = getApiBase();
 
   const handleExport = async (format) => {
     try {
       //const response = await fetch(`http://localhost:8000/api/export?format=${format}`, {
-      const response = await fetch(`http://192.168.1.3:8000/api/export?format=${format}`, {
+      const response = await fetch(`${API_BASE}/api/export?format=${format}`, {
 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
