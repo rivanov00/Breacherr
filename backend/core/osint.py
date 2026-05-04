@@ -1,8 +1,6 @@
 import aiohttp
 import asyncio
 
-# A basic list of popular platforms that use predictable URL structures for profiles.
-# Note: In a real-world tool, you would have hundreds of these and better handling for false positives.
 PLATFORMS = {
     "Instagram": {"url": "https://www.instagram.com/{}/", "icon": "https://www.google.com/s2/favicons?domain=instagram.com&sz=64"},
     "GitHub": {"url": "https://github.com/{}", "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64"},
@@ -40,7 +38,7 @@ async def check_platform(session, platform_name, url, icon_url):
             if response.status == 200:
                 content = await response.text()
                 content_lower = content.lower()
-                
+
                 not_found_keywords = [
                     "page not found", "404", "not found", "doesn't exist", 
                     "user not found", "couldn't find that page", "sign up to see",
@@ -48,10 +46,10 @@ async def check_platform(session, platform_name, url, icon_url):
                     "this page could not be found", "profile not found",
                     "unavailable", "no user with that username"
                 ]
-                
+
                 if any(keyword in content_lower for keyword in not_found_keywords):
                     return {"platform": platform_name, "url": url, "status": "Not Found", "icon": icon_url}
-                
+
                 return {"platform": platform_name, "url": url, "status": "Found", "icon": icon_url}
             else:
                 return {"platform": platform_name, "url": url, "status": "Not Found", "icon": icon_url}
@@ -61,7 +59,7 @@ async def check_platform(session, platform_name, url, icon_url):
 async def search_profiles(username_data: dict):
     username = username_data["username"]
     score = username_data["score"]
-    
+
     if not username:
         return
 
@@ -70,7 +68,7 @@ async def search_profiles(username_data: dict):
         for platform, info in PLATFORMS.items():
             url = info["url"].format(username)
             tasks.append(check_platform(session, platform, url, info["icon"]))
-        
+
         for coro in asyncio.as_completed(tasks):
             result = await coro
             result["match_score"] = score
@@ -79,8 +77,7 @@ async def search_profiles(username_data: dict):
 def generate_usernames(first_name: str, last_name: str, dob: str = None):
     first = first_name.lower().strip()
     last = last_name.lower().strip()
-    
-    # Each pattern has a score (0-100)
+
     patterns = [
         (f"{first}{last}", 90),
         (f"{first}.{last}", 85),
@@ -93,15 +90,15 @@ def generate_usernames(first_name: str, last_name: str, dob: str = None):
         (f"{first}{last}88", 35),
         (f"{first}{last}99", 35),
     ]
-    
+
     if dob:
         year = dob.split('-')[0] if '-' in dob else ""
         day = dob.split('-')[2] if len(dob.split('-')) > 2 else ""
         month = dob.split('-')[1] if len(dob.split('-')) > 1 else ""
-        
+
         if year:
             patterns.extend([
-                (f"{first}{last}{year}", 99), # Capped at 99%
+                (f"{first}{last}{year}", 99), 
                 (f"{first}{year}", 50),
                 (f"{last}{year}", 45),
                 (f"{first}{last}{year[-2:]}", 95)
@@ -111,11 +108,10 @@ def generate_usernames(first_name: str, last_name: str, dob: str = None):
                  (f"{first}{last}{day}{month}", 80),
                  (f"{first}{day}{month}", 40)
              ])
-             
-    # Deduplicate and return list of dicts
+
     unique_usernames = {}
     for un, score in patterns:
         if un not in unique_usernames or score > unique_usernames[un]:
             unique_usernames[un] = score
-            
+
     return [{"username": un, "score": s} for un, s in unique_usernames.items()]

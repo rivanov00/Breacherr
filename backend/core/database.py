@@ -22,48 +22,46 @@ class Breach(Base):
     domain = Column(String)
     breach_date = Column(String)
     description = Column(Text)
-    data_classes = Column(Text) # Stored as JSON string
-    password = Column(String) # For security analysis
+    data_classes = Column(Text) 
+    password = Column(String) 
 
 def init_db():
     Base.metadata.create_all(bind=engine)
 
 from core.local_leaks import RAW_DATA
-from core.security import analyze_password
 
 def seed_db():
     db = SessionLocal()
-    # Check if we already have data
+
     if db.query(Breach).first():
         db.close()
         return
 
     final_data = []
-    
-    # Local leaks (from local_leaks.py)
+
     lines = RAW_DATA.strip().split('\n')
     header_skipped = False
     for line in lines:
         if not header_skipped:
             header_skipped = True
             continue
-            
+
         parts = line.split(',')
         if len(parts) >= 5:
-            # Handle both 5-column (no ID) and 6-column (with ID) rows
+
             if len(parts) == 6:
-                # ID, Name, Username, Email, Password, Registration Date
+
                 name = parts[1].strip()
                 email = parts[3].strip()
                 password = parts[4].strip()
                 reg_date = parts[5].strip()
             else:
-                # Name, Username, Email, Password, Registration Date
+
                 name = parts[0].strip()
                 email = parts[2].strip()
                 password = parts[3].strip()
                 reg_date = parts[4].strip()
-            
+
             final_data.append({
                 "email": email,
                 "name": "Local Leak Database",
@@ -78,36 +76,33 @@ def seed_db():
     for item in final_data:
         db_breach = Breach(**item)
         db.add(db_breach)
-    
+
     db.commit()
     db.close()
 
 def search_local_breaches(email=None, name=None):
     db = SessionLocal()
     query = db.query(Breach)
-    
+
     if email:
         query = query.filter(Breach.email == email)
     if name:
         query = query.filter(Breach.title.contains(name))
-        
+
     results = query.all()
     db.close()
-    
+
     formatted = []
     for r in results:
-        # Perform password analysis on the fly
-        security_info = analyze_password(r.password)
-        
+
         formatted.append({
             "Name": r.name,
             "Title": r.title,
             "Domain": r.domain,
-            "Email": r.email, # Needed for Gravatar
+            "Email": r.email, 
             "BreachDate": r.breach_date,
             "Description": r.description,
             "DataClasses": json.loads(r.data_classes),
-            "SecurityAnalysis": security_info,
             "PasswordSnippet": f"{r.password[:2]}***{r.password[-1:]}" if r.password else "N/A"
         })
     return formatted

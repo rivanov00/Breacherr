@@ -103,28 +103,9 @@ function ReportViewer({ results, searchData }) {
                   </div>
                 </div>
 
-                {breach.SecurityAnalysis && (
-                  <div className="security-panel">
-                    <div className="security-header">
-                      <span>🔐</span> Сигурност на паролата: <strong>{breach.SecurityAnalysis.label}</strong>
-                    </div>
-                    <div className="security-progress">
-                      <div
-                        className={`security-bar security-score-${breach.SecurityAnalysis.score}`}
-                        style={{ width: `${(breach.SecurityAnalysis.score + 1) * 20}%` }}
-                      ></div>
-                    </div>
-                    <p style={{ fontSize: '0.85rem', margin: '0.5rem 0' }}>
-                      Време за разбиване: <strong>{breach.SecurityAnalysis.crack_time}</strong>
-                    </p>
-                    {breach.SecurityAnalysis.feedback.length > 0 && (
-                      <ul className="security-feedback">
-                        {breach.SecurityAnalysis.feedback.map((f, i) => <li key={i}>{f}</li>)}
-                      </ul>
-                    )}
-                    <div className="password-snippet">
-                      Разкрита парола: <code>{breach.PasswordSnippet}</code>
-                    </div>
+                {breach.PasswordSnippet && (
+                  <div className="password-snippet" style={{ marginTop: '0.5rem' }}>
+                    Разкрита парола: <code>{breach.PasswordSnippet}</code>
                   </div>
                 )}
 
