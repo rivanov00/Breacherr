@@ -69,13 +69,13 @@
 
 ### 6. Стартиране на Мобилно Приложение (Android)
 
-1.  **Синхронизирайте промените** (всеки път когато сменяте IP адрес):
+1.  **Синхронизирайте промените** Ако сте сменил IP address, отворете нов терминал в папката на проекта и напишете следните команди:
     ```bash
     npm run build
     npx cap sync
     ```
 2.  Отворете **Android Studio**, посочете папка `frontend/android`.
-3.  Свържете телефон чрез USB (с активиран **USB Debugging** от Developer Options). // Settings > About Phone > Build Number (7 пъти) > Developer Options > USB Debugging
+3.  Свържете телефон чрез USB кабел който поддържа Data Transfer (с активиран **USB Debugging** от Developer Options). // Settings > About Phone > Build Number (7 пъти) > Developer Options > USB Debugging
 4.  Натиснете бутона **Run (Play)**.
 5. Това ще зареди приложението на вашето Android устройство.
 
