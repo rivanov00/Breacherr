@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
+from contextlib import asynccontextmanager
 from core.osint import search_profiles, generate_usernames
 from core.database import init_db, seed_db, search_local_breaches
 import dicttoxml
@@ -10,12 +11,13 @@ import json
 import asyncio
 import hashlib
 
-app = FastAPI(title="Breacherr API", version="1.0.0")
-
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     init_db()
     seed_db()
+    yield
+
+app = FastAPI(title="Breacherr API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

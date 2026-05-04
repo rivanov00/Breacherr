@@ -37,18 +37,38 @@ def seed_db():
         db.close()
         return
 
-    for item in RAW_DATA:
-        db_breach = Breach(
-            email=item["email"],
-            name="Local Leak Database",
-            title=f"Компрометиран запис: {item['source']}",
-            domain=item["source"].lower().replace(" ", "") + ".com",
-            breach_date=item["date"],
-            password="N/A",
-            description=f"Този запис е открит в {item['source']}. Препоръчваме проверка на сигурността.",
-            data_classes=json.dumps(["Имейл адрес"])
-        )
-        db.add(db_breach)
+    lines = RAW_DATA.strip().split('\n')
+    header_skipped = False
+
+    for line in lines:
+        if not header_skipped:
+            header_skipped = True
+            continue
+        if not line.strip():
+            continue
+
+        parts = line.split(',')
+        if len(parts) >= 5:
+            try:
+                name = parts[0].strip()
+                username = parts[1].strip()
+                email = parts[2].strip()
+                password = parts[3].strip()
+                reg_date = parts[4].strip()
+
+                db_breach = Breach(
+                    email=email,
+                    name=name,
+                    title=f"Компрометиран запис: {email}",
+                    domain="internal-leak.bg",
+                    breach_date=reg_date,
+                    password=password,
+                    description=f"Този запис е открит в локален списък с компрометирани данни. Препоръчваме незабавна смяна на паролата за всички свързани услуги.",
+                    data_classes=json.dumps(["Имейл адреси", "Пароли", "Потребителски имена"])
+                )
+                db.add(db_breach)
+            except Exception:
+                continue
 
     db.commit()
     db.close()
